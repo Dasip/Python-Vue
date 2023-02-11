@@ -14,8 +14,7 @@ steps = [
             position varchar(150) not null,
             salary bigint not null,
             start_date timestamp not null,
-            leader int,
-            foreign key (leader) references employees(leader)
+            leader int references employees (id)
         );
     """,
          "drop table if exists employees;")
