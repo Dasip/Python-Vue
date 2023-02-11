@@ -1,0 +1,21 @@
+[tool.poetry]
+name = "whykingz"
+version = "0.1.0"
+description = ""
+authors = ["Vandolf <anisimov.dmitrii.e@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.9"
+aiohttp = "^3.8.3"
+asyncio = "^3.4.3"
+pydantic = "^1.10.4"
+aiopg = "^1.4.0"
+psycopg2 = "^2.9.5"
+dependency-injector = "^4.41.0"
+yoyo-migrations = "^8.2.0"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
