@@ -6,7 +6,7 @@ from pydantic import validator, ValidationError
 
 from app.pkg.models.base import BaseModel
 
-__all__ = ["Employee", "EmployeeCreateRequest", "EmployeeHierarch"]
+__all__ = ["Employee", "EmployeeCreateRequest", "EmployeeHierarch", "EmployeeUpdateRequest"]
 
 
 class BaseEmployee(BaseModel):
@@ -19,6 +19,7 @@ class Employee(BaseEmployee):
     position: str
     start_date: datetime.datetime
     salary: pydantic.PositiveInt
+    leader: Optional[int]
 
 
 class EmployeeHierarch(BaseEmployee):
@@ -52,6 +53,25 @@ class EmployeeHierarch(BaseEmployee):
 
 
 class EmployeeCreateRequest(BaseEmployee):
+    full_name: str
+    position: str
+    start_date: datetime.datetime
+    salary: pydantic.PositiveInt
+    leader_id: Optional[int]
+
+    @validator("start_date", pre=True)
+    def datetime_conversion(cls, value):
+        if type(value) is str:
+            return datetime.datetime.strptime(value, "%d.%m.%Y")
+
+        if type(value) is datetime.datetime:
+            return value
+
+        raise ValidationError
+
+
+class EmployeeUpdateRequest(BaseEmployee):
+    id: int
     full_name: str
     position: str
     start_date: datetime.datetime

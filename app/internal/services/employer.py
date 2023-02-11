@@ -6,7 +6,7 @@ from pydantic import ValidationError
 
 from app.internal.repositories.postgres.employees import Employees
 from app.pkg.models.exceptions.repository import EmptyResult, DriverError
-from app.pkg.models.pydantic.employees import EmployeeHierarch, EmployeeCreateRequest
+from app.pkg.models.pydantic.employees import EmployeeHierarch, EmployeeCreateRequest, EmployeeUpdateRequest
 
 __all__ = ["Employer"]
 
@@ -31,6 +31,16 @@ class Employer:
         try:
             model = pydantic.parse_obj_as(EmployeeCreateRequest, data)
             await self.__employees_repo.create(model)
+            return 200
+        except DriverError:
+            return 404
+        except ValidationError as e:
+            return 422
+
+    async def update_employee(self, data: Dict[Any, Any]) -> int:
+        try:
+            model = pydantic.parse_obj_as(EmployeeUpdateRequest, data)
+            await self.__employees_repo.update(model)
             return 200
         except DriverError:
             return 404

@@ -5,7 +5,7 @@ from app.internal.repositories.postgres.handlers.collect_response import (
 from app.internal.repositories.repository import Repository
 from app.internal.repositories.postgres.connection import get_connection
 from app.pkg.models.base import Model
-from app.pkg.models.pydantic.employees import Employee, EmployeeCreateRequest, EmployeeHierarch
+from app.pkg.models.pydantic.employees import Employee, EmployeeCreateRequest, EmployeeHierarch, EmployeeUpdateRequest
 
 __all__ = ["Employees"]
 
@@ -102,21 +102,23 @@ class Employees(Repository):
             return await cur.fetchall()
 
     @collect_response
-    async def update(self, cmd: Employee) -> Employee:
+    async def update(self, cmd: EmployeeUpdateRequest) -> Employee:
         q = """
         update employees
         set
             full_name = %(full_name)s,
             position = %(position)s,
             salary = %(salary)s,
-            start_date = %(start_date)s
+            start_date = %(start_date)s,
+            leader = %(leader_id)s
         where id = %(id)s
         returning
             id,
             full_name,
             position,
             salary,
-            start_date;
+            start_date,
+            leader;
         """
         async with get_connection() as cur:
             await cur.execute(q, cmd.to_dict())
