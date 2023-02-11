@@ -20,23 +20,24 @@ class Employees(Repository):
                 full_name,
                 position,
                 salary,
-                start_date
+                start_date,
+                leader
             )
-        value
+        values
             (
                 %(full_name)s,
                 %(position)s,
                 %(salary)s,
-                %(start_date)s
+                %(start_date)s,
+                %(leader_id)s
             )
         returning
-            (
-                id,
-                full_name,
-                position,
-                salary,
-                start_date
-            );
+            id,
+            full_name,
+            position,
+            salary,
+            start_date
+            ;
         """
         async with get_connection() as cur:
             await cur.execute(q, cmd.to_dict())

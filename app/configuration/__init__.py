@@ -2,6 +2,7 @@ from app.configuration.server import Server
 from app.pkg.models.core import Containers, Container
 from app.pkg.connectors import Connectors
 from app.internal.repositories import PostgresContainer
+from app.internal.services import Services
 
 __all__ = ["Server", "__containers__"]
 
@@ -11,5 +12,6 @@ __containers__ = Containers(
     containers=[
         Container(container=Connectors),
         Container(container=PostgresContainer),
+        Container(container=Services),
     ]
 )

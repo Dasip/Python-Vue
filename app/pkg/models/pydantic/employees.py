@@ -1,5 +1,5 @@
 import datetime
-from typing import List
+from typing import List, Optional
 
 import pydantic
 from pydantic import validator, ValidationError
@@ -25,7 +25,7 @@ class EmployeeHierarch(BaseEmployee):
     id: int
     full_name: str
     position: str
-    start_date: datetime.datetime
+    start_date: str
     salary: pydantic.PositiveInt
     full_leader: List[int]
 
@@ -40,9 +40,30 @@ class EmployeeHierarch(BaseEmployee):
 
         raise ValidationError
 
+    @validator("start_date", pre=True)
+    def datetime_conversion(cls, value):
+        if type(value) is str:
+            return value
+
+        if type(value) is datetime.datetime:
+            return value.strftime("%d.%m.%Y")
+
+        raise ValidationError
+
 
 class EmployeeCreateRequest(BaseEmployee):
     full_name: str
     position: str
     start_date: datetime.datetime
     salary: pydantic.PositiveInt
+    leader_id: Optional[int]
+
+    @validator("start_date", pre=True)
+    def datetime_conversion(cls, value):
+        if type(value) is str:
+            return datetime.datetime.strptime(value, "%d.%m.%Y")
+
+        if type(value) is datetime.datetime:
+            return value
+
+        raise ValidationError
