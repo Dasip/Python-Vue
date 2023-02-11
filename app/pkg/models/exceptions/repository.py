@@ -1,5 +1,3 @@
-from fastapi import status
-
 from app.pkg.models.base import BaseAPIException
 
 
@@ -8,12 +6,12 @@ __all__ = ["UniqueViolation", "EmptyResult", "DriverError"]
 
 class UniqueViolation(BaseAPIException):
     message = "Not unique"
-    status_code = status.HTTP_409_CONFLICT
+    status_code = 409
 
 
 class EmptyResult(BaseAPIException):
     message = "Empty result"
-    status_code = status.HTTP_404_NOT_FOUND
+    status_code = 404
 
 
 class DriverError(BaseAPIException):
@@ -22,4 +20,4 @@ class DriverError(BaseAPIException):
             self.message = message
 
     message = "Internal driver error"
-    status_code = status.HTTP_500_INTERNAL_SERVER_ERROR
+    status_code = 500
