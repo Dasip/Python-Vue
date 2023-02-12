@@ -6,7 +6,8 @@ from pydantic import ValidationError
 
 from app.internal.repositories.postgres.employees import Employees
 from app.pkg.models.exceptions.repository import EmptyResult, DriverError
-from app.pkg.models.pydantic.employees import EmployeeHierarch, EmployeeCreateRequest, EmployeeUpdateRequest
+from app.pkg.models.pydantic.employees import EmployeeHierarch, EmployeeCreateRequest, EmployeeUpdateRequest, \
+    EmployeeWithTeams
 
 __all__ = ["Employer"]
 
@@ -20,10 +21,22 @@ class Employer:
     ) -> None:
         self.__employees_repo = employees_repo
 
-    async def read_hierarchy(self) -> List[EmployeeHierarch]:
+    async def read_hierarchy(self) -> List[EmployeeWithTeams]:
         try:
             data = list(map(lambda x: x.to_dict(), await self.__employees_repo.read_all_hierarchy()))
-            return sorted(data, key=lambda x: len(x.get("full_leader")))
+            data = sorted(data, key=lambda x: len(x.get("full_leader")))
+
+            real_hierarchy = []
+            id_to_employee_link_hashmap = {}
+            for employee in data:
+                new_object = pydantic.parse_obj_as(EmployeeWithTeams, employee)
+                id_to_employee_link_hashmap[new_object.id] = new_object.team
+                if len(employee.get("full_leader")) == 0:
+                    real_hierarchy.append(new_object)
+                else:
+                    id_to_employee_link_hashmap.get(employee.get("full_leader")[-1]).append(new_object)
+            return [x.to_dict() for x in real_hierarchy]
+
         except EmptyResult:
             return []
 

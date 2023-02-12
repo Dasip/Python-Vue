@@ -6,7 +6,13 @@ from pydantic import validator, ValidationError
 
 from app.pkg.models.base import BaseModel
 
-__all__ = ["Employee", "EmployeeCreateRequest", "EmployeeHierarch", "EmployeeUpdateRequest"]
+__all__ = [
+    "Employee",
+    "EmployeeCreateRequest",
+    "EmployeeHierarch",
+    "EmployeeUpdateRequest",
+    "EmployeeWithTeams"
+]
 
 
 class BaseEmployee(BaseModel):
@@ -87,3 +93,13 @@ class EmployeeUpdateRequest(BaseEmployee):
             return value
 
         raise ValidationError
+
+
+class EmployeeWithTeams(BaseEmployee):
+    id: int
+    full_name: str
+    position: str
+    start_date: str
+    salary: pydantic.PositiveInt
+    team: List[BaseEmployee] = []
+
