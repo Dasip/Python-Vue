@@ -10,6 +10,8 @@ COPY ./migrations /migration_on/migrations
 COPY ./scripts /migration_on/scripts
 COPY ./scripts/migrate.py /migration_on/migrate.py
 
+RUN rm whykingz -r
+
 RUN chmod +x scripts/wait-for-server.sh
 RUN dos2unix scripts/*
 

@@ -50,3 +50,14 @@ services:
     ]
     depends_on:
       - db
+
+  frontend:
+    build:
+      context: .
+      dockerfile: ./docker/frontend/Dockerfile
+    ports:
+      - "${VUE_PORT}:3000"
+    container_name: python_employee_vue
+    volumes:
+      - ./whykingz:/usr/src/app/whykingz
+      - /usr/src/app/whykingz/node_modules
