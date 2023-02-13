@@ -34,6 +34,7 @@ class EmployeeHierarch(BaseEmployee):
     position: str
     start_date: str
     salary: pydantic.PositiveInt
+    leader_id: Optional[int]
     full_leader: List[int]
 
     @validator("full_leader", pre=True)
@@ -53,7 +54,7 @@ class EmployeeHierarch(BaseEmployee):
             return value
 
         if type(value) is datetime.datetime:
-            return value.strftime("%d.%m.%Y")
+            return value.strftime("%Y-%m-%d")
 
         raise ValidationError
 
@@ -68,7 +69,7 @@ class EmployeeCreateRequest(BaseEmployee):
     @validator("start_date", pre=True)
     def datetime_conversion(cls, value):
         if type(value) is str:
-            return datetime.datetime.strptime(value, "%d.%m.%Y")
+            return datetime.datetime.strptime(value, "%Y-%m-%d")
 
         if type(value) is datetime.datetime:
             return value
@@ -87,7 +88,7 @@ class EmployeeUpdateRequest(BaseEmployee):
     @validator("start_date", pre=True)
     def datetime_conversion(cls, value):
         if type(value) is str:
-            return datetime.datetime.strptime(value, "%d.%m.%Y")
+            return datetime.datetime.strptime(value, "%Y-%m-%d")
 
         if type(value) is datetime.datetime:
             return value
@@ -101,5 +102,6 @@ class EmployeeWithTeams(BaseEmployee):
     position: str
     start_date: str
     salary: pydantic.PositiveInt
+    leader_id: Optional[int]
     team: List[BaseEmployee] = []
 

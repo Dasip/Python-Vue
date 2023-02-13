@@ -17,7 +17,7 @@ class UpdateRoute(Route):
             service: Employer = Provide[Services.employer_service]
     ):
         new_data = await service.update_employee(await request.json())
-        return web.json_response(new_data, content_type="application/json", status=200)
+        return web.json_response(new_data, content_type="application/json", status=new_data)
 
     def get_route(self) -> web.RouteDef:
         return web.post(self.__route_name, self.update_one)

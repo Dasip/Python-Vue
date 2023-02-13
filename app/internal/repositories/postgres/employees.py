@@ -57,6 +57,56 @@ class Employees(Repository):
             return await cur.fetchall()
 
     @collect_response
+    async def read_by_leader(self, cmd: int) -> EmployeeHierarch:
+        q = """
+                with recursive hierarchy_table as (
+
+                    select
+                        id,
+                        full_name,
+                        position,
+                        salary,
+                        start_date,
+                        leader as leader_id,
+                        '' as full_leader
+                    from employees
+                    where
+                        leader is null
+
+                    union all
+
+                    select
+                        employ.id,
+                        employ.full_name,
+                        employ.position,
+                        employ.salary,
+                        employ.start_date,
+                        employ.leader as leader_id,
+                        hierarchy_table.full_leader || '_' || employ.leader
+                    from
+                        employees employ,
+                        hierarchy_table
+                    where
+                        employ.leader = hierarchy_table.id
+                )
+                select
+                    id,
+                    full_name,
+                    position,
+                    salary,
+                    start_date,
+                    leader_id,
+                    full_leader
+                from
+                    hierarchy_table
+                where
+                    id = %(leader)s;
+                """
+        async with get_connection() as cur:
+            await cur.execute(q, {"leader": cmd})
+            return await cur.fetchone()
+
+    @collect_response
     async def read_all_hierarchy(self) -> List[EmployeeHierarch]:
         q = """
         with recursive hierarchy_table as (
@@ -67,6 +117,7 @@ class Employees(Repository):
                 position,
                 salary,
                 start_date,
+                leader as leader_id,
                 '' as full_leader
             from employees
             where
@@ -80,6 +131,7 @@ class Employees(Repository):
                 employ.position,
                 employ.salary,
                 employ.start_date,
+                employ.leader as leader_id,
                 hierarchy_table.full_leader || '_' || employ.leader
             from
                 employees employ,
@@ -93,6 +145,7 @@ class Employees(Repository):
             position,
             salary,
             start_date,
+            leader_id,
             full_leader
         from
             hierarchy_table;

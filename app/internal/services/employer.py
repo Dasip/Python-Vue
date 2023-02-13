@@ -53,6 +53,10 @@ class Employer:
     async def update_employee(self, data: Dict[Any, Any]) -> int:
         try:
             model = pydantic.parse_obj_as(EmployeeUpdateRequest, data)
+            if model.leader_id is not None:
+                employee = await self.__employees_repo.read_by_leader(model.leader_id)
+                if model.id in employee.full_leader:
+                    return 501
             await self.__employees_repo.update(model)
             return 200
         except DriverError:
