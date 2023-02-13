@@ -1,9 +1,9 @@
 FROM node:14
 
-WORKDIR /usr/src/app/whykingz
+WORKDIR /usr/src/app/frontend
 
-COPY ./whykingz/package.json ./
-COPY ./whykingz/package-lock.json ./
+COPY ./frontend/package.json ./
+COPY ./frontend/package-lock.json ./
 
 RUN npm install
 

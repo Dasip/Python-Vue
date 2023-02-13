@@ -59,5 +59,5 @@ services:
       - "${VUE_PORT}:3000"
     container_name: python_employee_vue
     volumes:
-      - ./whykingz:/usr/src/app/whykingz
-      - /usr/src/app/whykingz/node_modules
+      - ./frontend:/usr/src/app/frontend
+      - /usr/src/app/frontend/node_modules
